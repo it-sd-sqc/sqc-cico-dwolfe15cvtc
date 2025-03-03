@@ -39,30 +39,50 @@ public class Main {
 
     @Override
     public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
-        throws BadLocationException
-    {
-      if (fb.getDocument() != null) {
-        super.insertString(fb, offset, stringToAdd, attr);
-      }
-      else {
-        Toolkit.getDefaultToolkit().beep();
-      }
+        throws BadLocationException {
+        if (stringToAdd == null) {
+            return;
+        }
+        
+        // Build a string containing only digits
+        StringBuilder filtered = new StringBuilder();
+        for (char c : stringToAdd.toCharArray()) {
+            if (Character.isDigit(c)) {
+                filtered.append(c);
+            }
+        }
+        
+        if (filtered.length() > 0) {
+            super.insertString(fb, offset, filtered.toString(), attr);
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+        }
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
-        throws BadLocationException
-    {
-      if (fb.getDocument() != null) {
-        super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
-      }
-      else {
-        Toolkit.getDefaultToolkit().beep();
-      }
+        throws BadLocationException {
+        if (stringToAdd == null) {
+            return;
+        }
+        
+        // Build a string containing only digits
+        StringBuilder filtered = new StringBuilder();
+        for (char c : stringToAdd.toCharArray()) {
+            if (Character.isDigit(c)) {
+                filtered.append(c);
+            }
+        }
+        
+        if (filtered.length() > 0) {
+            super.replace(fb, offset, lengthToDelete, filtered.toString(), attr);
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+        }
     }
-  }
+}
 
-  // Lookup the card information after button press ///////////////////////////
+// Lookup the card information after button press ///////////////////////////
   public static class Update implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
       Main.processCard();
