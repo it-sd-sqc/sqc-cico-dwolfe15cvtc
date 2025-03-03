@@ -126,6 +126,7 @@ public class Main {
   static JLabel labelUser;
   static JLabel labelState;
   static JButton buttonAcknowledge;
+  static JButton buttonProceedManually;  // New button for manual proceed
 
   // Timer variables //////////////////////////////////////////////////////////
   static java.util.Timer timer;
@@ -193,7 +194,6 @@ public class Main {
 
   // Display errors to users //////////////////////////////////////////////////
   private static void showError(int code) {
-    // Module 2 ticket: Show human-readable error messages.
     String[] explanations = {
         "Please inform staff an unknown error occurred.",
         "Please inform staff that database wasn't found.",
@@ -229,15 +229,12 @@ public class Main {
   }
 
   // Display name and new status //////////////////////////////////////////////
-  // Module 3 tickets: Display user name and new status. Doesn't require a
-  // method and can be done where this is called instead.
   private static void updateStateLabels(String name, boolean isCheckedInNow) {
     labelUser.setText(name);
     labelState.setText(isCheckedInNow ? "Checked IN" : "Checked OUT");
   }
 
   // Entry point //////////////////////////////////////////////////////////////
-  // Our GUI code is very similar; however, we want to keep it explicit.
   @SuppressWarnings("DuplicatedCode")
   public static void main(String[] args) {
     // Initialize variables.
@@ -309,6 +306,13 @@ public class Main {
     labelState.setForeground(Color.magenta);
     panelStatus.add(labelState);
 
+    // New "Proceed Manually" button on the check-in/check-out screen
+    buttonProceedManually = new JButton("Proceed Manually");
+    buttonProceedManually.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    buttonProceedManually.addActionListener(e -> doneProcessing());
+    buttonProceedManually.setForeground(Color.orange);
+    panelStatus.add(buttonProceedManually);
+
     panelStatus.add(Box.createVerticalGlue());
 
     // Error panel ////////////////////////////////////////////////////////////
@@ -352,7 +356,6 @@ public class Main {
 
     // Connect to DB //////////////////////////////////////////////////////////
     try {
-      //noinspection SpellCheckingInspection
       db = DriverManager.getConnection("jdbc:sqlite:cico.db");
       Statement command = db.createStatement();
       command.setQueryTimeout(TIMEOUT_STATEMENT_S);
@@ -367,22 +370,20 @@ public class Main {
       // 00000000 is guaranteed valid; create if needed.
       command.executeUpdate("INSERT INTO members (name, card, is_checked_in) SELECT 'Developer', '00000000', 0 WHERE NOT EXISTS (SELECT name, card, is_checked_in FROM members WHERE card = '00000000')");
 
-      // Create parameterized SQL statements.
-      statementQueryCard = db.prepareStatement("SELECT id, name, is_checked_in FROM members WHERE card = ? LIMIT 1");
+      statementQueryCard = db.prepareStatement("SELECT id, name, card, is_checked_in FROM members WHERE card = ?");
       statementUpdateMember = db.prepareStatement("UPDATE members SET is_checked_in = ? WHERE id = ?");
       statementUpdateLog = db.prepareStatement("INSERT INTO log (members_id, is_checked_in, at) VALUES (?, ?, datetime())");
 
-      // Close the database and prepared statements on exit.
       Runtime.getRuntime().addShutdownHook(new Thread(new OnShutdown()));
+
+      // Display frame.
+      frame.pack();
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.setVisible(true);
     }
     catch (SQLException e) {
       System.err.println(e.getMessage());
-      db = null;
+      showError(ERROR_NO_DB);
     }
-
-    // Display the GUI ////////////////////////////////////////////////////////
-    frame.pack();
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
   }
 }
