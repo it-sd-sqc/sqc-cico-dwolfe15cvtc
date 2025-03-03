@@ -9,3 +9,19 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 
 ## Expected results:
 *  The card number field should ignore non-numeric characters. If no numeric input is provided, the field should remain empty.
+
+# Module 5-8: Ticket 501: Add Manual Proceed Button After Scanning
+
+## Test Steps
+1. Launch the CiCo application.
+2. Scan a valid card.
+3. Observe the status update screen.
+4. Wait for the timeout to return to the main screen.
+5. Restart the application.
+6. Scan a valid card.
+7. Click the new "Proceed" button instead of waiting.
+8. Observe the status update screen transition immediately back to the main screen.
+
+## Expected Results
+* The new "Proceed" button should allow users to bypass the timeout and return to the main screen immediately.
+* If the button is not clicked, the timeout should still function as before.
