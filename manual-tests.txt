@@ -25,3 +25,24 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected Results
 * The new "Proceed" button should allow users to bypass the timeout and return to the main screen immediately.
 * If the button is not clicked, the timeout should still function as before.
+
+# Module 6-8: Ticket 601
+Remove Enter or Procced Button and automate the task after entering a valid id.
+
+## Test Steps
+
+1.Build and run CiCo.
+
+2.Type exactly 8 digits "00000000" into the card field.
+
+3.Return to main screen (wait for timeout).
+
+4.Type 7 digits "0000000", pause, then type the 8th digit.
+
+## Expected Results
+The Enter button should not be present in the UI.
+
+The status panel should automatically appear after entering the 8th digit in step 2.
+
+After step 4, the system should immediately process the card when the 8th digit is entered.
+
