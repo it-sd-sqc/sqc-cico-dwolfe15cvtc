@@ -54,6 +54,10 @@ public class Main {
         
         if (filtered.length() > 0) {
             super.insertString(fb, offset, filtered.toString(), attr);
+            // Auto-submit if we've reached the max length
+            if (fb.getDocument().getLength() == MAX_LENGTH) {
+                SwingUtilities.invokeLater(Main::processCard);
+            }
         } else {
             Toolkit.getDefaultToolkit().beep();
         }
@@ -76,6 +80,10 @@ public class Main {
         
         if (filtered.length() > 0) {
             super.replace(fb, offset, lengthToDelete, filtered.toString(), attr);
+            // Auto-submit if we've reached the max length
+            if (fb.getDocument().getLength() == MAX_LENGTH) {
+                SwingUtilities.invokeLater(Main::processCard);
+            }
         } else {
             Toolkit.getDefaultToolkit().beep();
         }
@@ -277,12 +285,12 @@ public class Main {
     fieldNumber.setForeground(Color.magenta);
     panelMain.add(fieldNumber);
 
-    JButton updateButton = new JButton("Update");
+    /* JButton updateButton = new JButton("Update");
     updateButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     updateButton.addActionListener(new Update());
     updateButton.setForeground(Color.green);
     panelMain.add(updateButton);
-
+    */
     panelMain.add(Box.createVerticalGlue());
 
     // Status panel ///////////////////////////////////////////////////////////
